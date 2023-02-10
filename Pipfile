@@ -13,8 +13,8 @@ connexion = {extras = ["swagger-ui"], version = "*"}
 pytest = "*"
 
 [dev-packages]
-black = "*"
 sphinx = "*"
+black = {extras = ["d"], version = "*"}
 
 [requires]
 python_version = "3.10"
