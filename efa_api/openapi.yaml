@@ -1,0 +1,493 @@
+openapi: 3.0.3
+info:
+  title: Tenant Service
+  description: >-
+    This is the spec that defines the APIs provided by the tenant service to
+    create a tenant and add the networks to the tenant, configure network
+    parameters and configure switches with the tenant network's specific
+    configurations.
+  version: 2.7.0
+  contact:
+    name: Extreme Networks
+    url: http://www.extremenetworks.com
+    email: support@extremenetworks.com
+  license:
+    name: Apache license
+    url: http://www.extremenetworks.com
+paths:
+  /tenants:
+    get:
+      tags:
+        - Tenant
+      summary: getTenants
+      description: This API helps to get all tenants configured with tenant service
+      operationId: getTenants
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantList'
+        '401':
+          description: Authorization information is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /tenant:
+    get:
+      tags:
+        - Tenant
+      summary: getTenant
+      description: This API helps to get the specified Tenant details
+      operationId: getTenant
+      parameters:
+        - name: name
+          required: true
+          in: query
+          description: Name of the tenant to retrieve details
+          schema:
+            type: string
+            x-exportParamName: Name
+          x-exportParamName: Name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Request has invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '401':
+          description: Authorization information is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '404':
+          description: Tenant with the specified Name is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '409':
+          description: Tenant with the specified Name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+    post:
+      summary: createTenant
+      description: >-
+        This API helps to create a tenant and reserve resources like Physical
+        Ports, L2VNI, L3VNI, VLAN and Number of VRFs for the tenant. Tenant Name
+        must be a unique key while creating a tenant with the tenant service.
+      operationId: createTenant
+      tags:
+        - Tenant
+      requestBody:
+        description: Create a new tenant
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tenant'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Request has invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '401':
+          description: Authorization information is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '409':
+          description: Tenant with the specified Name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+    delete:
+      tags:
+        - Tenant
+      summary: deleteTenant
+      description: >-
+        This API helps to delete the tenant if no tenant network is created by
+        this tenant. If it has any tenant network, a force option is required to
+        delete this tenant. The delete request with force parameter will trigger
+        a delete operation for all its networks.
+      operationId: deleteTenant
+      parameters:
+        - name: name
+          required: true
+          in: query
+          description: Name of the tenant to delete
+          schema:
+            type: string
+            x-exportParamName: Name
+          x-exportParamName: Name
+        - name: force
+          in: query
+          description: >-
+            Use force parameter to remove the tenant forcefully. This will
+            remove the relevant configurations from the devices for its tenant
+            network and delete the relevant record with tenant service.
+          schema:
+            type: boolean
+            x-exportParamName: Force
+          x-exportParamName: Force
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Request has invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '401':
+          description: Authorization information is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '404':
+          description: Tenant with the specified Name is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '409':
+          description: Tenant with the specified Name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /tenant/{tenant_name}:
+    put:
+      summary: updateTenant
+      description: >-
+        This API helps to update existing tenant for non-conflicting changes of
+        its resources like L2VNI, L3VNI, vlan range, port, number of vrf,
+        description, type etc for the tenant.
+      operationId: updateTenant
+      tags:
+        - Tenant
+      parameters:
+        - name: tenant_name
+          in: path
+          required: true
+          description: Name of the tenant to update parameter
+          schema:
+            type: string
+            x-exportParamName: TenantName
+          x-exportParamName: TenantName
+      requestBody:
+        description: Update the Tenant parameter
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantUpdate'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Request has invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '401':
+          description: Authorization information is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '404':
+          description: Tenant with the specified Name is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '409':
+          description: Tenant with the specified Name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+components:
+  schemas:
+    DevicePort:
+      type: object
+      properties:
+        int-type:
+          type: string
+          enum:
+            - ethernet
+            - port-channel
+          description: Interface type [ethernet, port-channel]
+          example: ethernet
+        name:
+          type: string
+          uniqueItems: true
+          description: Name of the interface [0/1, 10]
+          example: 0/1
+    Device:
+      type: object
+      properties:
+        mgmt-ip:
+          type: string
+          description: Device Management IP Address
+          example: 10.25.25.100
+        port:
+          type: array
+          description: >-
+            List of physical ports of device on which tenant network will be
+            configured
+          items:
+            $ref: '#/components/schemas/DevicePort'
+    ErrorModel:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: |
+            1000 - No Error.
+            1001 - Validation Error.
+            1101 - Assignment Error.
+            1102 - Configuration Error.
+            1201 - Device Conneciton Error.
+            1301 - Database Connection Error.
+            1302 - Database Get Error.
+            1303 - Database Create Error.
+            1304 - Database Delete Error.
+            1305 - Database Update Error.
+            1306 - Generate UUID Error.
+            1307 - Database Inconsistent.
+            1308 - Database Transaction Error.
+            1309 - Database Copier Error.
+            1401 - Inventory Service Connection Error.
+            1402 - Inventory Service Query Error.
+            1501 - Fabric Service Connection Error.
+            1502 - Fabric Service Query Error.
+            1601 - Message Bus Connection Error.
+            1602 - Message Bus Publish Error.
+            1603 - Message Bus Event Handle Error.
+            1701 - API Validation Error.
+            1702 - API Decode Error.
+          enum:
+            - 1000
+            - 1001
+            - 1101
+            - 1102
+            - 1201
+            - 1301
+            - 1302
+            - 1303
+            - 1304
+            - 1305
+            - 1306
+            - 1307
+            - 1308
+            - 1309
+            - 1401
+            - 1402
+            - 1501
+            - 1502
+            - 1601
+            - 1602
+            - 1603
+            - 1701
+            - 1702
+        message:
+          type: string
+          description: Describing the reason of failure
+    Tenant:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          description: >-
+            Unique ID of the Tenant generated by the service. User API can not
+            pass this for create operation
+          example: 1
+          readOnly: true
+        name:
+          type: string
+          description: Unique name of the tenant
+          example: Tenant-A
+        description:
+          type: string
+          description: Description about tenant
+          example: Tenant-A's Description
+        l2-vni-range:
+          type: string
+          description: >-
+            Contiguous Range of L2 VNIs in ascending order will be reserved for
+            the tenant within the scope of a fabric. L2 networks will consume
+            the VNIs from this range.
+          example: 1-100
+        l3-vni-range:
+          type: string
+          description: >-
+            Contiguous Range of L3 VNIs in ascending order will be reserved for
+            the tenant within the scope of a fabric. L3 networks will consume
+            the VNIs from this range.
+          example: 4096-5000
+        vlan-range:
+          type: string
+          description: Range of VLANs to reserve for the tenant
+          example: 10-20,50-60
+        num-of-vrf:
+          type: integer
+          description: Number of VRFs to reserve for the tenant
+          example: 20
+        enable-bd:
+          type: boolean
+          description: Enable bridge-domain so that overlapping vlans can be supported
+          example: true
+        type:
+          type: string
+          enum:
+            - shared
+            - private
+          description: >-
+            POs or VRFs of shared tenant are available to other tenants. Default
+            tenant type is private.
+          example: shared | private
+        port-list:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Device'
+        mirror-destination-port-list:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Device'
+    TenantUpdate:
+      type: object
+      required:
+        - name
+        - operation
+      properties:
+        operation:
+          type: string
+          enum:
+            - desc-update
+            - vni-update
+            - port-add
+            - port-delete
+            - vlan-add
+            - vlan-delete
+            - vlan-update
+            - num-vrf-update
+            - enable-bd-update
+          description: Add, delete or update tenant configuration
+          example: >-
+            desc-update | vni-update | port-add | port-delete | vlan-add |
+            vlan-delete | vlan-update | num-vrf-update | enable-bd-update
+        force:
+          type: boolean
+          description: >-
+            Force option which is valid only for port-delete operation is
+            deprecated.
+        tenant:
+          $ref: '#/components/schemas/Tenant'
+    TenantList:
+      type: object
+      properties:
+        tenant:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
