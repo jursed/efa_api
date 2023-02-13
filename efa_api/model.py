@@ -22,7 +22,9 @@ class DevicePort(BaseModel):
         description="Interface type [ethernet, port-channel]",
         example="ethernet",
     )
-    name: Optional[str] = Field(None, description="Name of the interface [0/1, 10]", example="0/1")
+    name: Optional[str] = Field(
+        None, description="Name of the interface [0/1, 10]", example="0/1"
+    )
 
 
 class Device(BaseModel):
@@ -93,7 +95,9 @@ class Tenant(BaseModel):
         example=1,
     )
     name: str = Field(..., description="Unique name of the tenant", example="Tenant-A")
-    description: Optional[str] = Field(None, description="Description about tenant", example="Tenant-A's Description")
+    description: Optional[str] = Field(
+        None, description="Description about tenant", example="Tenant-A's Description"
+    )
     l2_vni_range: Optional[str] = Field(
         None,
         alias="l2-vni-range",
@@ -135,7 +139,9 @@ class Tenant(BaseModel):
         description="POs or VRFs of shared tenant are available to other tenants. Default tenant type is private.",
         example="shared | private",
     )
-    port_list: Optional[List[Device]] = Field(None, alias="port-list", unique_items=True)
+    port_list: Optional[List[Device]] = Field(
+        None, alias="port-list", unique_items=True
+    )
     mirror_destination_port_list: Optional[List[Device]] = Field(
         None, alias="mirror-destination-port-list", unique_items=True
     )
