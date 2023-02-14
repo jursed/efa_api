@@ -1,48 +1,5 @@
 {
-
-    "name": "Tenant-A",
-    "description": "Tenant-A's Description",
-    "l2-vni-range": "1-100",
-    "l3-vni-range": "4096-5000",
-    "vlan-range": "10-20,50-60",
-    "num-of-vrf": 20,
-    "enable-bd": true,
-    "type": "shared",
-    "port-list": 
-
-[
-
-{
-
-    "mgmt-ip": "10.25.25.100",
-    "port": 
-
-[
-
-            {
-                "int-type": "ethernet",
-                "name": "0/1"
-            }
-        ]
-    }
-
-],
-"mirror-destination-port-list": 
-[
-
-{
-
-    "mgmt-ip": "10.25.25.100",
-    "port": 
-
-[
-
-                {
-                    "int-type": "ethernet",
-                    "name": "0/1"
-                }
-            ]
-        }
-    ]
-
+	"name": "Tenant-A",
+	"description": "Tenant-A's Description",
+	"vlan-range": "10-20,50-60"
 }

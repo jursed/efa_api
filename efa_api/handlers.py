@@ -1,4 +1,4 @@
-from efa_api.model import Tenant
+from efa_api.models_frontend import Tenant
 
 
 def getTenant(name):
