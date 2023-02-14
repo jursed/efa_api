@@ -1,12 +1,12 @@
 import connexion
-from efa_api import handlers
+from efa_api.resolver import MethodResolver
 
 
 def create_app(test_config=None):
     connex_app = connexion.FlaskApp(__name__)
     api = connex_app.add_api(
         "openapi.yaml" if test_config is None else test_config.OPENAPI_SPEC,
-        resolver=connexion.resolver.RelativeResolver(handlers),
+        resolver=MethodResolver("handlers"),
         resolver_error=501,
     )
     app = connex_app.app

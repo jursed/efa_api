@@ -1,27 +1,36 @@
 from efa_api.model import Tenant
 
+class TenantView:
+    def __init__(self):
+        # TODO
+        ...
 
-def getTenant(name):
-    # TODO
-    return f"{name=}", 200
+    def get(self):
+        # TODO
+        return f"OK", 200
+
+    def put(self):
+        # TODO
+        ...
+
+    def post(self):
+        # TODO
+        return "OK", 200
+
+    def delete(self):
+        # TODO
+        ...
+
+    def search(self):
+        # TODO
+        ...
 
 
-def getTenants():
-    # TODO
-    return "foo", 200
+class TenantsView:
+    def __init__(self):
+        # TODO
+        ...
 
-
-def createTenant(body):
-    # TODO
-    tenant = Tenant(**body)
-    return repr(tenant), 200
-
-
-def deleteTenant():
-    # TODO
-    ...
-
-
-def updateTenant():
-    # TODO
-    ...
+    def get(self):
+        # TODO
+        ...
