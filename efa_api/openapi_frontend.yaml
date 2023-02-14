@@ -1,0 +1,213 @@
+openapi: 3.0.3
+info:
+  title: EFA demo interface
+  description: >-
+    A user-facing demo that translates simplified EFA-API-like requests into
+    full EFA API requests
+  version: 0.1.0
+  contact:
+    name: Juraj Sedivy
+    url: https://github.com/jursed/efa_api/
+paths:
+  /tenants:
+    get:
+      summary: Get all tenants
+      # description: TODO
+      operationId: getTenants
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantList'
+        '401':
+          description: Authorization information is missing or invalid
+        default:
+          description: Different error
+  /tenant:
+    get:
+      summary: Get a specified tenant
+      # description: TODO
+      operationId: getTenant
+      parameters:
+        - name: name
+          required: true
+          in: query
+          description: Name of the tenant to retrieve details
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Request has invalid input parameters
+        '401':
+          description: Authorization information is missing or invalid
+        '404':
+          description: Tenant with the specified Name is not found
+        '409':
+          description: Tenant with the specified Name already exists
+        default:
+          description: Unexpected error
+    post:
+      summary: Create a specified tenant
+      # description: TODO
+      operationId: createTenant
+      requestBody:
+        description: Create a new tenant
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tenant'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Request has invalid input parameters
+        '401':
+          description: Authorization information is missing or invalid
+        '409':
+          description: Tenant with the specified Name already exists
+        default:
+          description: Unexpected error
+    delete:
+      summary: Delete a specified tenant
+      # description: TODO
+      operationId: deleteTenant
+      parameters:
+        - name: name
+          required: true
+          in: query
+          description: Name of the tenant to delete
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: >-
+            Use force parameter to remove the tenant forcefully. This will
+            remove the relevant configurations from the devices for its tenant
+            network and delete the relevant record with tenant service.
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Request has invalid input parameters
+        '401':
+          description: Authorization information is missing or invalid
+        '404':
+          description: Tenant with the specified Name is not found
+        '409':
+          description: Tenant with the specified Name already exists
+        default:
+          description: Unexpected error
+  /tenant/{tenant_name}:
+    put:
+      summary: Update a specified tenant's resources
+      # description: TODO
+      operationId: updateTenant
+      tags:
+        - Tenant
+      parameters:
+        - name: tenant_name
+          in: path
+          required: true
+          description: Name of the tenant to update
+          schema:
+            type: string
+      requestBody:
+        description: Update the Tenant parameter
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantUpdate'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          description: Request has invalid input parameters
+        '401':
+          description: Authorization information is missing or invalid
+        '404':
+          description: Tenant with the specified Name is not found
+        '409':
+          description: Tenant with the specified Name already exists
+        default:
+          description: Unexpected error
+components:
+  schemas:
+    Tenant:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          description: >-
+            Unique ID of the Tenant generated by the service. User API can not
+            pass this for create operation
+          example: 1
+          readOnly: true
+        name:
+          type: string
+          description: Unique name of the tenant
+          example: Tenant A
+        description:
+          type: string
+          description: Description about tenant
+          example: Tenant A for ACME LLC.
+        vlan-range:
+          type: string
+          description: Range of VLANs to reserve for the tenant
+          example: 10-20,50-60
+    TenantUpdate:
+      type: object
+      required:
+        - name
+        - operation
+      properties:
+        operation:
+          type: string
+          enum:
+            - vlan-add
+            - vlan-delete
+            - vlan-update
+          description: Add, delete or update tenant configuration
+          example: >-
+            vlan-update
+        tenant:
+          $ref: '#/components/schemas/Tenant'
+    TenantList:
+      type: object
+      properties:
+        tenant:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
+#  securitySchemes:
+#    basic:
+#      type: http
+#      scheme: basic
+#      x-basicInfoFunc: app.auth
+#security:
+#  - basic: []
