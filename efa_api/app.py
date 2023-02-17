@@ -1,4 +1,4 @@
-import connexion
+import connexion  # type: ignore
 from efa_api import handlers
 
 
@@ -8,6 +8,8 @@ def create_app(test_config=None):
         "openapi_frontend.yaml" if test_config is None else test_config.OPENAPI_SPEC,
         resolver=connexion.resolver.RelativeResolver(handlers),
         resolver_error=501,
+        validate_responses=True,
+        # strict_validation=True  # N/A for OAS3, see https://github.com/spec-first/connexion/issues/837
     )
     app = connex_app.app
 

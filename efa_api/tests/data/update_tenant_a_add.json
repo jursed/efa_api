@@ -1,0 +1,9 @@
+{
+	"name": "Tenant-A",
+	"operation": "vlan-add",
+	"tenant": {
+		"name": "Tenant-A",
+		"description": "Tenant-A's Description",
+		"vlan-range": "11-22,55-66"
+	}
+}

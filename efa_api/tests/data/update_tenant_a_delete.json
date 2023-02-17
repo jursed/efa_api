@@ -1,0 +1,9 @@
+{
+	"name": "Tenant-A",
+	"operation": "vlan-delete",
+	"tenant": {
+		"name": "Tenant-A",
+		"description": "Tenant-A's Description",
+		"vlan-range": ""
+	}
+}

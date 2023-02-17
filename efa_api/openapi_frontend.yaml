@@ -13,7 +13,7 @@ paths:
     get:
       summary: Get all tenants
       # description: TODO
-      operationId: getTenants
+      operationId: get_tenants
       responses:
         '200':
           description: OK
@@ -29,7 +29,7 @@ paths:
     get:
       summary: Get a specified tenant
       # description: TODO
-      operationId: getTenant
+      operationId: get_tenant
       parameters:
         - name: name
           required: true
@@ -57,7 +57,7 @@ paths:
     post:
       summary: Create a specified tenant
       # description: TODO
-      operationId: createTenant
+      operationId: create_tenant
       requestBody:
         description: Create a new tenant
         content:
@@ -83,7 +83,7 @@ paths:
     delete:
       summary: Delete a specified tenant
       # description: TODO
-      operationId: deleteTenant
+      operationId: delete_tenant
       parameters:
         - name: name
           required: true
@@ -120,7 +120,7 @@ paths:
     put:
       summary: Update a specified tenant's resources
       # description: TODO
-      operationId: updateTenant
+      operationId: update_tenant
       tags:
         - Tenant
       parameters:

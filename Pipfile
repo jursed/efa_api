@@ -11,6 +11,7 @@ mypy = "*"
 swagger-ui = "*"
 connexion = {extras = ["swagger-ui"], version = "*"}
 pytest = "*"
+pytest-datadir = "*"
 
 [dev-packages]
 sphinx = "*"
